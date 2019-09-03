@@ -4,6 +4,7 @@ const request = require('supertest');
 const app = require('../lib/app');
 const connect = require('../lib/utils/connect');
 const mongoose = require('mongoose');
+const Animal = require('../lib/models/Animal');
 
 describe('app routes', () => {
   beforeAll(() => {
@@ -42,6 +43,22 @@ describe('app routes', () => {
           type: 'Lama', 
           diet: 'herbavor', 
           weight: '60lbs', 
+          age: 5 
+        });
+      });
+  });
+
+  it('removes an animal', async() => {
+    const animal = await Animal.create({ name: 'john', type: 'lamb', diet: 'herbavor', weight: '20lbs', age: 5 });
+    return request(app)
+      .delete(`/api/v1/animals/${animal._id}`)
+      .then(res => {
+        expect(res.body).toEqual({ 
+          _id: expect.any(String),
+          name: 'john', 
+          type: 'lamb', 
+          diet: 'herbavor', 
+          weight: '20lbs', 
           age: 5 
         });
       });
